@@ -1,0 +1,8 @@
+# Baseline không ML: xếp hạng theo momentum 12-1 tháng, equal-weight top-k.
+inherit: configs/base.yaml
+model:
+  name: momentum_rule
+uncertainty:
+  method: none
+portfolio:
+  sizing: equal

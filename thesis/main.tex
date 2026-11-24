@@ -1,0 +1,34 @@
+% Biên dịch: make thesis (cần latexmk + TeX Live có gói vietnam/babel) hoặc upload lên Overleaf.
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb,booktabs,graphicx,hyperref}
+\usepackage[backend=biber,style=apa]{biblatex}
+\addbibresource{references.bib}
+\graphicspath{{figures/}}
+
+\title{Lựa chọn cổ phiếu long-only có định lượng bất định\\
+trên thị trường chứng khoán Việt Nam:\\
+LightGBM kết hợp Adaptive Conformal Prediction dưới ràng buộc biên độ và T+2}
+\author{Hoang Luong Tran}
+\date{2027}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+% TODO: viết cuối cùng (tuần 23)
+\end{abstract}
+\tableofcontents
+
+\include{chapters/01_introduction}
+\include{chapters/02_literature_review}
+\include{chapters/03_methodology}
+\include{chapters/04_experiments}
+\include{chapters/05_results}
+\include{chapters/06_conclusion}
+
+\printbibliography
+\appendix
+\include{chapters/appendix_reproducibility}
+\end{document}

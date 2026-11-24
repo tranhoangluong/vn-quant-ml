@@ -1,0 +1,6 @@
+# LightGBM dự báo điểm, không dùng bất định.
+inherit: configs/base.yaml
+uncertainty:
+  method: none
+portfolio:
+  sizing: equal

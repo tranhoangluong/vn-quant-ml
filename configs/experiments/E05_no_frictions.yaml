@@ -1,0 +1,8 @@
+# Ablation: bỏ ràng buộc biên độ/T+2/phí để đo mức "ảo" của backtest thường.
+inherit: configs/base.yaml
+market:
+  price_limit: null
+  settlement_days: 0
+  fee_buy: 0.0
+  fee_sell: 0.0
+  tax_sell: 0.0

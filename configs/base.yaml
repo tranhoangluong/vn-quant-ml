@@ -1,0 +1,84 @@
+# Cấu hình gốc. Mọi thí nghiệm kế thừa file này và chỉ ghi đè phần khác biệt.
+project:
+  name: vn-quant-ml
+  seed: 42
+  run_dir: experiments
+
+paths:
+  raw: data/raw
+  interim: data/interim
+  processed: data/processed
+  external: data/external
+  reports: reports
+
+data:
+  source: vnstock            # vnstock | csv
+  vnstock_source: VCI        # VCI | TCBS
+  start: "2014-01-01"
+  end: null                  # null = hôm nay
+  universe: VN30
+  # file lịch sử thành phần VN30 theo kỳ review (point-in-time, tránh survivorship bias)
+  membership_file: data/external/vn30_membership.csv
+  benchmark: VN30
+  min_history_days: 250
+
+market:                      # ràng buộc đặc thù thị trường VN (HOSE)
+  price_limit: 0.07          # biên độ ±7%
+  settlement_days: 2         # T+2: mua hôm t, bán sớm nhất t+2
+  lot_size: 100
+  fee_buy: 0.0015            # phí môi giới
+  fee_sell: 0.0015
+  tax_sell: 0.001            # thuế bán 0.1%
+  allow_short: false         # VN không cho bán khống cổ phiếu cơ sở
+
+features:
+  groups: [momentum, reversal, volatility, liquidity, technical]
+  windows: [5, 10, 21, 63, 126, 252]
+  cross_sectional_rank: true # chuẩn hoá theo tiết diện mỗi ngày
+
+label:
+  horizon: 5                 # lợi suất tương lai 5 phiên
+  type: excess_return        # raw_return | excess_return | rank
+  entry: next_close          # khớp tại close t+1, khớp với backtest/engine.py
+
+split:
+  scheme: expanding          # expanding | rolling
+  train_years: 4
+  valid_months: 6
+  test_months: 6
+  step_months: 6
+  embargo_days: 10           # >= horizon, chống rò rỉ nhãn chồng lấn
+  test_start: "2019-01-01"
+
+model:
+  name: lgbm
+  params:
+    objective: regression
+    learning_rate: 0.03
+    num_leaves: 31
+    min_data_in_leaf: 100
+    feature_fraction: 0.7
+    bagging_fraction: 0.8
+    bagging_freq: 1
+    lambda_l2: 1.0
+    n_estimators: 2000
+    early_stopping_rounds: 100
+    verbose: -1
+
+uncertainty:
+  method: aci                # none | split | aci | dtaci
+  alpha: 0.1                 # mức phủ mục tiêu 90%
+  gamma: 0.005               # bước học ACI
+  gammas: [0.001, 0.005, 0.01, 0.05]   # cho DtACI
+
+portfolio:
+  rebalance: weekly          # daily | weekly
+  top_k: 10
+  sizing: conformal          # equal | conformal
+  max_weight: 0.15
+  min_lower_bound: 0.0       # chỉ mua khi cận dưới khoảng dự báo > ngưỡng
+
+evaluation:
+  n_trials_for_dsr: null     # null = tự đếm số cấu hình đã thử
+  pbo_partitions: 16
+  bootstrap_samples: 1000

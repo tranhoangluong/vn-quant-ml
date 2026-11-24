@@ -1,0 +1,37 @@
+.PHONY: install data features train backtest report test lint app thesis all
+
+CFG ?= configs/base.yaml
+
+install:
+	pip install -e ".[data,dev,app]"
+	pre-commit install
+
+data:        ## tải giá + danh sách VN30 → data/raw, làm sạch → data/interim
+	python scripts/01_download_data.py --config $(CFG)
+	python scripts/02_build_dataset.py --config $(CFG)
+
+features:    ## tạo feature + nhãn → data/processed/panel.parquet
+	python scripts/03_build_features.py --config $(CFG)
+
+train:       ## walk-forward LightGBM + conformal → experiments/<run_id>/
+	python scripts/04_train_walkforward.py --config $(CFG)
+
+backtest:    ## backtest long-only có ràng buộc biên độ, T+2, phí
+	python scripts/05_backtest.py --config $(CFG)
+
+report:      ## bảng/hình cho luận văn → reports/ và thesis/
+	python scripts/06_make_report.py --config $(CFG)
+
+all: data features train backtest report
+
+test:
+	pytest -q
+
+lint:
+	ruff check src tests scripts && ruff format --check src tests scripts
+
+app:
+	streamlit run app/streamlit_app.py
+
+thesis:
+	cd thesis && latexmk -pdf main.tex

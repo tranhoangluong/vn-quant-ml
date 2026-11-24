@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vnqml"
+version = "0.1.0"
+description = "Uncertainty-aware long-only stock selection on Vietnam's market (VN30) with LightGBM + adaptive conformal prediction"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "pyarrow>=14",
+  "scipy>=1.11",
+  "scikit-learn>=1.4",
+  "lightgbm>=4.3",
+  "pyyaml>=6",
+  "matplotlib>=3.8",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+data = ["vnstock>=3.2"]
+app = ["streamlit>=1.35", "plotly>=5.20"]
+track = ["mlflow>=2.12"]
+dev = ["pytest>=8", "pytest-cov", "ruff>=0.4", "pre-commit", "jupyterlab", "nbstripout"]
+
+[project.scripts]
+vnqml = "vnqml.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "NPY"]
+ignore = ["B905", "E501"]  # E501 do ruff format lo; B905 để code gọn
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["integration: needs network / real data (deselect with -m 'not integration')"]
+addopts = "-m 'not integration'"

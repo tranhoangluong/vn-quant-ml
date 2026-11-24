@@ -1,0 +1,4 @@
+# Phương pháp chính của luận văn.
+inherit: configs/base.yaml
+uncertainty:
+  method: aci
