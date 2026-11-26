@@ -3,10 +3,10 @@
 ## Luồng dữ liệu
 
 ```
-vnstock (VCI/TCBS)        data/external/vn30_membership.csv (thủ công, từ HOSE)
+API Vietcap (VCI)         data/external/vn30_membership.csv (thủ công, từ HOSE)
         │                              │
         ▼                              │
-01_download_data ──► data/raw/prices.parquet
+01_download_data ──► data/raw/snapshot=<ngày>/{prices,index,financials}/ticker=<mã>/
         │                              │
         ▼                              ▼
 02_build_dataset ──► data/interim/panel.parquet
@@ -35,7 +35,9 @@ Mỗi bước đọc đầu ra của bước trước từ đĩa, nên có thể
 | Module | Vai trò | Chương luận văn |
 |---|---|---|
 | `config.py` | Đọc YAML, `inherit:` để thí nghiệm chỉ ghi phần khác base | 4 (thiết lập) |
-| `data/loaders.py` | Tải OHLCV qua vnstock (import lười), hoặc đọc CSV | 3.1 Dữ liệu |
+| `data/sources.py` | Gọi API VCI (giá, BCTC, danh sách mã) và KBS (kiểm chéo) | 3.1 Dữ liệu |
+| `data/store.py` | Snapshot parquet chia theo mã, manifest, kiểm tra, diff snapshot | 3.1 |
+| `data/loaders.py` | Đưa về panel (date, ticker), hoặc đọc CSV | 3.1 |
 | `data/universe.py` | Rổ VN30 theo thời điểm, chống survivorship bias | 3.1 |
 | `data/cleaning.py` | Làm sạch, lợi suất, cờ trần/sàn, winsorize tiết diện | 3.1 |
 | `features/price.py` | Momentum, reversal, volatility, thanh khoản (Amihud), kỹ thuật | 3.2 Feature |
