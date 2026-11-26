@@ -1,0 +1,26 @@
+# Bật sau khi pipeline ổn định (tuần ~16): cập nhật dữ liệu + tín hiệu mỗi tối ngày giao dịch.
+name: daily-update
+on:
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: "Các mã cần cập nhật, cách nhau bằng dấu phẩy (ví dụ FPT,VNM)"
+        required: true
+        type: string
+  # schedule:
+  #   - cron: "30 10 * * 1-5"   # 17:30 giờ VN
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -e ".[data]"
+      # Tải giá của các mã đã chọn và chỉ số, bỏ BCTC. Khi bật lịch, đặt biến repo DAILY_TICKERS.
+      - run: python scripts/01_download_data.py --config configs/base.yaml --tickers "$TICKERS" --no-financials
+        env:
+          TICKERS: ${{ inputs.tickers || vars.DAILY_TICKERS }}
+      - run: python scripts/07_daily_signal.py --config configs/base.yaml

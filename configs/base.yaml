@@ -12,8 +12,10 @@ paths:
   reports: reports
 
 data:
-  source: vnstock            # vnstock | csv
-  vnstock_source: VCI        # VCI | TCBS
+  source: vci                # vci (API Vietcap, xem src/vnqml/data/sources.py) | csv
+  snapshot: null             # snapshot dữ liệu thô dùng cho bước 02; null = mới nhất (data/raw/LATEST)
+  index_symbols: [VN30, VNINDEX]
+  min_interval_sec: 1.0      # giãn cách giữa 2 request, tôn trọng nguồn miễn phí
   start: "2014-01-01"
   end: null                  # null = hôm nay
   universe: VN30
