@@ -192,10 +192,11 @@ def parse_vci_ohlc(d: dict, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFr
             "volume": d["v"],
         }
     )
-    df[["open", "high", "low", "close"]] = df[["open", "high", "low", "close"]].astype("float64")
-    df["volume"] = df["volume"].astype("int64")
     df = df[(df["date"] >= start) & (df["date"] <= end)]
-    return df.drop_duplicates("date").sort_values("date").reset_index(drop=True)
+    df = df.drop_duplicates("date").sort_values("date").reset_index(drop=True)
+    df[["open", "high", "low", "close"]] = df[["open", "high", "low", "close"]].astype("float64")
+    df["volume"] = df["volume"].astype("Int64" if df["volume"].isna().any() else "int64")
+    return df
 
 
 def parse_vci_financials(data: dict, symbol: str) -> pd.DataFrame:

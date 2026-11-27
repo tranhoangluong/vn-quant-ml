@@ -27,6 +27,23 @@ def test_parse_vci_ohlc_dates_and_types():
     assert len(cut) == 1
 
 
+def test_parse_vci_ohlc_null_volume_outside_range():
+    data = {**VCI_OHLC, "v": [None, 15670800, 16985400]}
+    df = parse_vci_ohlc(data, pd.Timestamp("2026-11-20"), pd.Timestamp("2026-11-23"))
+    assert df["volume"].dtype == "int64"
+    assert df["volume"].tolist() == [15670800, 16985400]
+
+
+def test_parse_vci_ohlc_null_volume_inside_range():
+    data = {**VCI_OHLC, "v": [18437700, None, 16985400]}
+    df = parse_vci_ohlc(data, pd.Timestamp("2026-11-20"), pd.Timestamp("2026-11-23"))
+    volume = df.set_index("date")["volume"]
+    assert volume.dtype == "Int64"
+    assert volume.index.tolist() == [pd.Timestamp("2026-11-20"), pd.Timestamp("2026-11-23")]
+    assert volume.loc["2026-11-20"] is pd.NA
+    assert volume.loc["2026-11-23"] == 16985400
+
+
 def test_parse_vci_financials_available_at():
     data = {
         "years": [
