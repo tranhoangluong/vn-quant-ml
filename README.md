@@ -37,7 +37,7 @@ Run a single experiment: `make train backtest CFG=configs/experiments/E03_lgbm_a
 ## Method in one picture
 
 ```
-prices (vnstock) ─► point-in-time VN30 universe ─► features (rank) ─► LightGBM
+prices (Vietcap API) ─► point-in-time VN30 universe ─► features (rank) ─► LightGBM
      ─► conformal interval [lo, hi] (ACI) ─► long-only sizing ─► VN constraints ─► net returns
 ```
 
@@ -72,7 +72,7 @@ docs/         architecture, data, experiment log, roadmap
 
 ## Data
 
-Free sources only (vnstock, HOSE announcements, CafeF). Raw data is not redistributed; `make data`
+Free sources only (Vietcap/KBS public web APIs, HOSE announcements, CafeF; see `docs/data_guide.md`). Raw data is not redistributed; `make data`
 rebuilds it. Survivorship bias is handled with a hand-curated VN30 membership history in
 `data/external/`. See [docs/data.md](docs/data.md).
 

@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-data = ["vnstock>=3.2"]
+data = ["requests>=2.31"]  # vnstock bị PyPI cách ly từ 09/2026, xem docs/data_guide.md
 app = ["streamlit>=1.35", "plotly>=5.20"]
 track = ["mlflow>=2.12"]
 dev = ["pytest>=8", "pytest-cov", "ruff>=0.4", "pre-commit", "jupyterlab", "nbstripout"]
